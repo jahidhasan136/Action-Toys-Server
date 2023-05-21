@@ -29,7 +29,7 @@ const client = new MongoClient(uri, {
 async function run() {
     try {
         // Connect the client to the server	(optional starting in v4.7)
-        await client.connect();
+        // await client.connect();
 
         const toysCollection = client.db("actionDB").collection("toys")
 
@@ -42,6 +42,13 @@ async function run() {
             const id = req.params.id
             const query = {_id: new ObjectId(id)}
             const result = await toysCollection.findOne(query)
+            res.send(result)
+        })
+
+        app.post('/toys/', async(req, res) => {
+            const addToys = req.body
+            console.log(addToys)
+            const result = await toysCollection.insertOne(addToys)
             res.send(result)
         })
 
