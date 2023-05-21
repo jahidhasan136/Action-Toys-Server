@@ -54,7 +54,6 @@ async function run() {
         app.get('/mytoys',async(req, res)=>{
             // console.log(req.query.email)
             const email = req.query.email
-            console.log(email)
             const query = {email: email}
             const cursor =  toysCollection.find(query)
             const result = await cursor.toArray()
