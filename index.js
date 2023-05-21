@@ -34,7 +34,7 @@ async function run() {
         const toysCollection = client.db("actionDB").collection("toys")
 
         app.get('/toys', async (req, res) => {
-            const cursor = await toysCollection.find().toArray()
+            const cursor = await toysCollection.find().limit(20).toArray()
             res.send(cursor)
         })
 
