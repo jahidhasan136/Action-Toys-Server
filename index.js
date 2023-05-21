@@ -62,6 +62,32 @@ async function run() {
 
         })
 
+        app.patch('/toys/:id', async (req, res) => {
+            const id = req.params.id
+            const filter = {_id: new ObjectId(id)}
+            const updateToy = req.body 
+            const updateData = {
+                $set: {
+                    name : updateToy.name, 
+                    subcategory : updateToy.subcategory, 
+                    quantity : updateToy.quantity, 
+                    price : updateToy.price, 
+                    rating : updateToy.rating, 
+                    picture : updateToy.picture,
+                    description : updateToy.description
+                }
+            }
+            const result = await toysCollection.updateOne(filter, updateData)
+            res.send(result)
+        })
+
+        app.delete("/toys/:id", async (req, res) => {
+            const id = req.params.id
+            const query = { _id: new ObjectId(id) }
+            const result = await toysCollection.deleteOne(query)
+            res.send(result)
+        })
+
         
         // Send a ping to confirm a successful connection
         await client.db("admin").command({ ping: 1 });
