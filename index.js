@@ -38,43 +38,53 @@ async function run() {
             res.send(cursor)
         })
 
-        app.get('/toys/:id', async(req, res) => {
+        app.get('/toys/:id', async (req, res) => {
             const id = req.params.id
-            const query = {_id: new ObjectId(id)}
+            const query = { _id: new ObjectId(id) }
             const result = await toysCollection.findOne(query)
             res.send(result)
         })
 
-        app.post('/toys/', async(req, res) => {
+        app.post('/toys/', async (req, res) => {
             const addToys = req.body
             const result = await toysCollection.insertOne(addToys)
             res.send(result)
         })
 
-        app.get('/mytoys',async(req, res)=>{
+        app.get('/mytoys', async (req, res) => {
             // console.log(req.query.email)
-            const email = req.query.email
-            const query = {email: email}
-            const cursor =  toysCollection.find(query)
+            const email = req.query.email;
+            const sort = req.query.sort;
+            console.log(email, sort)
+            const query = { email: email };
+            let cursor;
+
+            if (sort === 'low') {
+                cursor = toysCollection.find(query).sort({ price: 1 });
+            } else if (sort === 'high') {
+                cursor = toysCollection.find(query).sort({ price: -1 });
+            } else {
+                cursor = toysCollection.find(query);
+            }
             const result = await cursor.toArray()
             res.send(result)
 
         })
 
-        
+
         app.patch('/toys/:id', async (req, res) => {
             const id = req.params.id
-            const filter = {_id: new ObjectId(id)}
-            const updateToy = req.body 
+            const filter = { _id: new ObjectId(id) }
+            const updateToy = req.body
             const updateData = {
                 $set: {
-                    name : updateToy.name, 
-                    subcategory : updateToy.subcategory, 
-                    quantity : updateToy.quantity, 
-                    price : updateToy.price, 
-                    rating : updateToy.rating, 
-                    picture : updateToy.picture,
-                    description : updateToy.description
+                    name: updateToy.name,
+                    subcategory: updateToy.subcategory,
+                    quantity: updateToy.quantity,
+                    price: updateToy.price,
+                    rating: updateToy.rating,
+                    picture: updateToy.picture,
+                    description: updateToy.description
                 }
             }
             const result = await toysCollection.updateOne(filter, updateData)
@@ -88,7 +98,7 @@ async function run() {
             res.send(result)
         })
 
-        
+
         // Send a ping to confirm a successful connection
         await client.db("admin").command({ ping: 1 });
         console.log("Pinged your deployment. You successfully connected to MongoDB!");
